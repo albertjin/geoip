@@ -1,0 +1,7 @@
+[
+  {"name": "delegated-apnic", "source": "https://ftp.apnic.net/apnic/stats/apnic/delegated-apnic-latest"},
+  {"name": "delegated-arin-extended", "source": "http://ftp.arin.net/pub/stats/arin/delegated-arin-extended-latest"},
+  {"name": "delegated-lacnic", "source": "http://ftp.lacnic.net/pub/stats/lacnic/delegated-lacnic-latest"},
+  {"name": "delegated-afrinic", "source": "http://ftp.afrinic.net/pub/stats/afrinic/delegated-afrinic-latest"},
+  {"name": "delegated-ripencc", "source": "http://ftp.ripe.net/ripe/stats/delegated-ripencc-latest"}
+]

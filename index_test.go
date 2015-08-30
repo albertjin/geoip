@@ -57,7 +57,7 @@ func TestIndex(t *testing.T) {
 
 func TestIndexLoad(t *testing.T) {
     var index *Index
-    ReadGzip("geoip.json.gz", func(rd io.Reader) {
+    ReadGzip("geoip.index.json.gz", func(rd io.Reader) {
         index, _ = NewIndexFromJson(rd)
     })
 
