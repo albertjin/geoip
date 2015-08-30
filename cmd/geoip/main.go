@@ -14,7 +14,7 @@ import (
     "github.com/albertjin/geoip"
 )
 
-func ReadGzip(filename string, handle func(io.Reader)) {
+func ReadGzip(filename string, handle func(io.Reader)) (err error) {
     f, err := os.Open(filename)
     if err != nil {
         return
@@ -28,19 +28,24 @@ func ReadGzip(filename string, handle func(io.Reader)) {
     defer z.Close()
 
     handle(z)
+    return
 }
 
-func WriteGzip(filename string, handle func(io.Writer)) {
+func WriteGzip(filename string, level int, handle func(io.Writer)) (err error) {
     f, err := os.Create(filename)
     if err != nil {
         return
     }
     defer f.Close()
 
-    z := gzip.NewWriter(f)
+    z, err := gzip.NewWriterLevel(f, level)
+    if err != nil {
+        return
+    }
     defer z.Close()
 
     handle(z)
+    return
 }
 
 func main() {
@@ -59,7 +64,7 @@ func main() {
             })
         }
 
-        WriteGzip("geoip.index.json.gz", func(w io.Writer) {
+        WriteGzip("geoip.index.json.gz", gzip.BestCompression, func(w io.Writer) {
             log(index.ToJson(w, nil))
         })
         return
@@ -86,7 +91,7 @@ func main() {
                     log("[start]", filename, source)
                     r, _ := http.DefaultClient.Get(source)
                     if r.StatusCode == http.StatusOK {
-                        WriteGzip(filename, func(w io.Writer) {
+                        WriteGzip(filename, gzip.BestCompression, func(w io.Writer) {
                             buf := make([]byte, 1024)
                             for {
                                 if n, err := r.Body.Read(buf); (err != nil) || (n == 0) {
