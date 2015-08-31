@@ -29,7 +29,7 @@ func NewIndex() *Index {
     v6 := bitidx.NewNode(0)
     z := []byte(net.IPv4zero.To16())
     v6.Put(bitidx.NewBits(z, 12*8+1), 0, false)
-    v4, _ := v6.Find(bitidx.NewBits(z, 12*8))
+    v4, _, _ := v6.Find(bitidx.NewBits(z, 12*8))
 
     return &Index{[]bitidx.Node{v6, v4}, map[string]int{"": 0}, []string{""}, 0}
 }
@@ -40,7 +40,7 @@ func NewIndexFromJson(rd io.Reader) (index *Index, extra interface{}) {
     dec := json.NewDecoder(rd)
     if dec.Decode(&v) == nil {
         v.Index.ConsolidateNum()
-        s, _ := v.Index.Find(bitidx.NewBits([]byte(net.IPv4zero.To16()), 12*8))
+        s, _, _ := v.Index.Find(bitidx.NewBits([]byte(net.IPv4zero.To16()), 12*8))
         return &Index{[]bitidx.Node{v.Index, s}, v.Ids, v.Names, v.LastId}, v.Extra
     }
     return nil, nil
@@ -60,7 +60,7 @@ func (index *Index) Put(block *Block, name string) {
 }
 
 // Find ip for name. When no ip is found empty string is returned.
-func (index *Index) Find(ip string) (name string) {
+func (index *Index) Find(ip string) (name string, length int) {
     if i := net.ParseIP(ip); i != nil {
         var n bitidx.Node
         if j := i.To4(); j != nil {
@@ -70,9 +70,10 @@ func (index *Index) Find(ip string) (name string) {
             n = index.index[BlockIPv6]
         }
 
-        _, x := n.Find(bitidx.NewBits([]byte(i), -1))
+        _, x, l := n.Find(bitidx.NewBits([]byte(i), -1))
         if id, ok := x.(int); ok {
             name = index.names[id]
+            length = l
         }
     }
 

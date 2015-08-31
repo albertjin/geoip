@@ -50,8 +50,8 @@ func TestIndex(t *testing.T) {
         index.Put(r, n)
     }
 
-    if n := index.Find("190.168.2.1"); n != "VE" {
-        t.Error("not expected", n)
+    if n, l := index.Find("190.168.2.1"); n != "VE" || l != 17 {
+        t.Error("not expected", n, l)
     }
 }
 
@@ -61,15 +61,15 @@ func TestIndexLoad(t *testing.T) {
         index, _ = NewIndexFromJson(rd)
     })
 
-    if n := index.Find("153.16.0.1"); n != "US" {
+    if n, l := index.Find("153.16.0.1"); n != "US" || l != 16 {
+        t.Error("not expected", n, l)
+    }
+
+    if n, l := index.Find("153.37.0.1"); n != "CN" || l != 15 {
         t.Error("not expected", n)
     }
 
-    if n := index.Find("153.37.0.1"); n != "CN" {
-        t.Error("not expected", n)
-    }
-
-    if n := index.Find("122.250.0.1"); n != "JP" {
+    if n, l := index.Find("122.250.0.1"); n != "JP" || l != 15 {
         t.Error("not expected", n)
     }
 }

@@ -29,7 +29,7 @@ func TestParseRIR1(t *testing.T) {
 
     r := bitidx.NewNode(0)
     r.Put(bitidx.NewBits([]byte(net.IPv4zero.To16()), 12*8+1), 0, false)
-    s, _ := r.Find(bitidx.NewBits([]byte(net.IPv4zero.To16()), 12*8))
+    s, _, _ := r.Find(bitidx.NewBits([]byte(net.IPv4zero.To16()), 12*8))
 
     rs := []bitidx.Node{r, s}
 
